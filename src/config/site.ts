@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Vite + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "FinanceFox",
+  description: "FinanceFox is a platform for managing your finances.",
   navItems: [
     {
       label: "Home",
@@ -23,6 +23,14 @@ export const siteConfig = {
     {
       label: "About",
       href: "/about",
+    },
+    {
+      label: "Login",
+      href: "/auth/login",
+    },
+    {
+      label: "Register",
+      href: "/auth/register",
     },
   ],
   navMenuItems: [
