@@ -110,7 +110,7 @@ export default function DocsPage() {
     ws.send(
       JSON.stringify({
         role: "user",
-        type: "direct",
+        type: "gemini",
         content: input,
         threadId: "test-thread",
       }),
@@ -153,8 +153,10 @@ export default function DocsPage() {
                       : "https://i.pravatar.cc/150?u=a042581f4e29026704d"
                   }
                   style={{
-                    marginTop: "0.2rem",
+                    marginTop: msg.role !== "assistant" ? "1.2rem" : "0",
                     alignSelf: "flex-start",
+                    width: "40px",
+                    height: "40px",
                   }}
                 />
 
@@ -162,13 +164,17 @@ export default function DocsPage() {
                   style={
                     msg.role === "assistant"
                       ? {
-                          alignSelf: "flex-end",
+                          // backgroundColor: "#e3f2fd",
+                          maxWidth: "80%",
+                          borderRadius: "2px 20px 20px 20px",
                           marginBottom: "1rem",
                           padding: "1rem",
                           marginRight: "8%",
                         }
                       : {
-                          alignSelf: "flex-start",
+                          // backgroundColor: "#f3e5f5",
+                          maxWidth: "80%",
+                          borderRadius: "20px 20px 0px 20px",
                           marginBottom: "0.5rem",
                           padding: "1rem",
                           marginLeft: "5%",
@@ -176,9 +182,25 @@ export default function DocsPage() {
                   }
                 >
                   {isCodeMessage(msg.content) ? (
-                    <Code>{extractCodeContent(msg.content)}</Code>
+                    <Code
+                      style={{
+                        padding: "1rem",
+                        fontSize: "0.9em",
+                        width: "100%",
+                        overflowX: "auto",
+                      }}
+                    >
+                      {extractCodeContent(msg.content)}
+                    </Code>
                   ) : (
-                    <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                    <p
+                      style={{
+                        margin: 0,
+                        whiteSpace: "pre-wrap",
+                        lineHeight: "1.6",
+                        // color: msg.role === "assistant" ? "#1a237e" : "#4a148c",
+                      }}
+                    >
                       {msg.content}
                     </p>
                   )}
@@ -186,14 +208,60 @@ export default function DocsPage() {
               </div>
             ))}
             {isLoading && (
-              <p
+              <div
                 style={{
                   display: "flex",
-                  // justifyContent: "",
+                  // justifyContent: "flex-end",
+                  marginLeft: "5%",
+                  padding: "1rem",
                 }}
               >
-                Thinking...
-              </p>
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "12px 20px",
+                    borderRadius: "20px",
+                    backgroundColor: "#e3f2fd",
+                    animation: "pulse 1.5s infinite",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor: "#1a237e",
+                        animation: "bounce 1.4s infinite",
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor: "#1a237e",
+                        animation: "bounce 1.4s infinite 0.2s",
+                      }}
+                    />
+                    <div
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor: "#1a237e",
+                        animation: "bounce 1.4s infinite 0.4s",
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             )}
             <div ref={messagesEndRef} />
           </div>

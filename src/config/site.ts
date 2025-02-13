@@ -68,10 +68,10 @@ export const siteConfig = {
     },
   ],
   links: {
-    github: "https://github.com/frontio-ai/heroui",
-    twitter: "https://twitter.com/hero_ui",
-    docs: "https://heroui.com",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    github: "https://github.com/o1sumitkumar",
+    twitter: "https://twitter.com/o1sumitkumar",
+    docs: "https://o1sumitkumar.com",
+    discord: "https://discord.gg/o1sumitkumar",
+    sponsor: "https://patreon.com/o1sumitkumar",
   },
 };
