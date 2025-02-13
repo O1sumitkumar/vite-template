@@ -110,7 +110,7 @@ export default function DocsPage() {
     ws.send(
       JSON.stringify({
         role: "user",
-        type: "gemini",
+        type: "direct",
         content: input,
         threadId: "test-thread",
       }),
@@ -141,7 +141,7 @@ export default function DocsPage() {
               <div
                 key={index}
                 className={`flex gap-4 items-center mx-2 ${
-                  msg.role === "assistant" ? "flex-row-reverse" : "flex-row"
+                  msg.role === "assistant" ? "flex-row" : "flex-row-reverse"
                 }`}
               >
                 <Avatar
@@ -163,17 +163,15 @@ export default function DocsPage() {
                     msg.role === "assistant"
                       ? {
                           alignSelf: "flex-end",
-                          // maxWidth: "fit-content",
                           marginBottom: "1rem",
                           padding: "1rem",
-                          marginLeft: "8%",
+                          marginRight: "8%",
                         }
                       : {
                           alignSelf: "flex-start",
-                          // maxWidth: "fit-content",
                           marginBottom: "0.5rem",
                           padding: "1rem",
-                          marginRight: "5%",
+                          marginLeft: "5%",
                         }
                   }
                 >
@@ -191,7 +189,7 @@ export default function DocsPage() {
               <p
                 style={{
                   display: "flex",
-                  justifyContent: "end",
+                  // justifyContent: "",
                 }}
               >
                 Thinking...
