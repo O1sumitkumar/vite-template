@@ -11,9 +11,9 @@ import LampDemo from "@/components/ui/lamp";
 
 export default function IndexPage() {
   return (
-    <DefaultLayout>
+    <DefaultLayout pt={0}>
+      <LampDemo />
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <LampDemo />
         <div className="inline-block max-w-lg text-center justify-center">
           <span className={title()}>Make&nbsp;</span>
           <span className={title({ color: "violet" })}>beautiful&nbsp;</span>

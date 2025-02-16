@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Avatar, Button, Card, Code } from "@heroui/react";
+import { Alert, Avatar, Button, Card, Code } from "@heroui/react";
 import { Input } from "@heroui/input";
 import { button as buttonStyles } from "@heroui/theme";
 
@@ -38,10 +38,13 @@ export default function DocsPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // Initialize the WebSocket connection only once
-    if (!ws) ws = new WebSocket("ws://192.168.31.166:3000/ai");
+    // if (!ws) ws = new WebSocket("ws://192.168.31.166:3000/ai");
+    console.log("ws", import.meta.env);
+    if (!ws) ws = new WebSocket(`${import.meta.env.VITE_API_WS}/ai`);
 
     const handleMessage = (event: MessageEvent) => {
       const data: WSMessage = JSON.parse(event.data);
@@ -85,7 +88,9 @@ export default function DocsPage() {
     };
 
     ws.addEventListener("message", handleMessage);
-    ws.addEventListener("open", () => console.log("Connected to WebSocket"));
+    ws.addEventListener("open", () => (
+      <Alert description="Connected to WebSocket" title="Connected" />
+    ));
     ws.addEventListener("close", () => (ws = null));
 
     return () => {
@@ -98,9 +103,14 @@ export default function DocsPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Auto-focus input on mount and after messages update
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [messages]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || !ws) return;
+    if (!input.trim() || !ws || isLoading) return;
 
     // Append the user's message.
     setMessages((prev) => [...prev, { role: "user", content: input }]);
@@ -110,12 +120,13 @@ export default function DocsPage() {
     ws.send(
       JSON.stringify({
         role: "user",
-        type: "gemini",
+        type: "direct",
         content: input,
         threadId: "test-thread",
       }),
     );
     setInput("");
+    inputRef.current?.focus();
   };
 
   return (
@@ -124,7 +135,7 @@ export default function DocsPage() {
         style={{
           display: "flex",
           flexDirection: "column",
-          // padding: "1rem",
+          paddingBottom: "120px", // Add space for fixed input
         }}
       >
         <div
@@ -267,38 +278,53 @@ export default function DocsPage() {
           </div>
         </div>
 
+        {/* Fixed input footer */}
         <form
           style={{
-            position: "sticky",
-            bottom: "0",
-            maxWidth: "900px",
-            width: "100%",
-            margin: "0 auto",
-            display: "flex",
+            position: "fixed",
+            bottom: "40px",
+            left: "0",
+            right: "0",
+            // backgroundColor: "white",
+            // borderTop: "1px solid #e5e7eb",
             padding: "1rem 0",
+            // boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+            zIndex: 1000,
           }}
           onSubmit={handleSubmit}
         >
-          <Input
-            aria-autocomplete="none"
-            placeholder="Type your message..."
-            style={{ flex: 1, maxWidth: "100%" }}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <Button
-            className={buttonStyles({
-              color: "primary",
-              radius: "full",
-              variant: "shadow",
-            })}
-            disabled={!input.trim()}
-            style={{ marginLeft: "0.5rem" }}
-            type="submit"
-            variant="solid"
+          <div
+            style={{
+              maxWidth: "900px",
+              margin: "0 auto",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
           >
-            Send
-          </Button>
+            <Input
+              ref={inputRef}
+              aria-autocomplete="none"
+              disabled={isLoading} // Disable input during loading
+              placeholder="Type your message..."
+              style={{ flex: 1 }}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <Button
+              className={buttonStyles({
+                color: "primary",
+                radius: "full",
+                variant: "shadow",
+              })}
+              disabled={!input.trim() || isLoading}
+              style={{ marginLeft: "0.5rem" }}
+              type="submit"
+              variant="solid"
+            >
+              Send
+            </Button>
+          </div>
         </form>
       </div>
     </DefaultLayout>

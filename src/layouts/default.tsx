@@ -1,16 +1,25 @@
 import { Link } from "@heroui/link";
+import { FC } from "react";
 
 import { Navbar } from "@/components/navbar";
 
-export default function DefaultLayout({
-  children,
-}: {
+interface DefaultLayoutProps {
   children: React.ReactNode;
-}) {
+  pt?: number;
+  isCenter?: boolean;
+}
+
+const DefaultLayout: FC<DefaultLayoutProps> = ({
+  children,
+  pt = 16,
+  isCenter = false,
+}) => {
   return (
     <div className="relative flex flex-col h-screen">
       <Navbar />
-      <main className="container mx-auto max-w-7xl px-6 flex-grow pt-16">
+      <main
+        className={`container mx-auto max-w-7xl px-6 flex-grow pt-${pt} ${isCenter ? "flex items-center justify-center" : ""}`}
+      >
         {children}
       </main>
       <footer className="w-full flex items-center justify-center py-3">
@@ -26,4 +35,6 @@ export default function DefaultLayout({
       </footer>
     </div>
   );
-}
+};
+
+export default DefaultLayout;
