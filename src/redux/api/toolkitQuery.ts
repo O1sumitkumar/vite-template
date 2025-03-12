@@ -1,14 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Business_Endpoint } from "@api/business/BusinessEndPoints";
-import { oneTapDevAPIBaseURL } from "@api/fetcher";
-import { Tag } from "@interface/tags.interface";
+
+import { authRoute } from "@/services/auth/auth.route";
 
 export const tagsApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: oneTapDevAPIBaseURL.endsWith("/")
-      ? oneTapDevAPIBaseURL
-      : `${oneTapDevAPIBaseURL}/`,
+    baseUrl: "https://api.example.com/api/",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as any)?.auth?.token;
 
@@ -23,9 +20,9 @@ export const tagsApi = createApi({
   }),
   tagTypes: ["Tags"],
   endpoints: (builder) => ({
-    getTags: builder.query<any, { page?: number; size?: number }>({
+    getUser: builder.query<any, { page?: number; size?: number }>({
       query: ({ page = 1, size = 10 }) =>
-        `${Business_Endpoint.FETCH_TAGS_LIST}?page=${page}&limit=${size}`,
+        `${authRoute.User}?page=${page}&limit=${size}`,
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
       },
@@ -44,16 +41,16 @@ export const tagsApi = createApi({
       providesTags: ["Tags"],
     }),
 
-    addTag: builder.mutation<Tag, Partial<Tag>>({
+    addUser: builder.mutation<Tag, Partial<Tag>>({
       query: (tag) => ({
-        url: "tags",
+        url: authRoute.User,
         method: "POST",
         body: tag,
       }),
       async onQueryStarted(newTag, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           tagsApi.util.updateQueryData(
-            "getTags",
+            "getUser",
             { page: 1, size: 10 },
             (draft) => {
               draft.push({ ...newTag, id: `temp-${Date.now()}` } as Tag);
@@ -71,16 +68,16 @@ export const tagsApi = createApi({
       invalidatesTags: ["Tags"],
     }),
 
-    updateTag: builder.mutation<Tag, { id: string; updates: Partial<Tag> }>({
+    updateUser: builder.mutation<Tag, { id: string; updates: Partial<Tag> }>({
       query: ({ id, updates }) => ({
-        url: `tags/${id}`,
+        url: `${authRoute.User}/${id}`,
         method: "PATCH",
         body: updates,
       }),
       async onQueryStarted({ id, updates }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           tagsApi.util.updateQueryData(
-            "getTags",
+            "getUser",
             { page: 1, size: 10 },
             (draft) => {
               const tag = draft.find((t) => t.id === id);
@@ -102,15 +99,15 @@ export const tagsApi = createApi({
       invalidatesTags: ["Tags"],
     }),
 
-    deleteTag: builder.mutation<void, string>({
+    deleteUser: builder.mutation<void, string>({
       query: (id) => ({
-        url: `tags/${id}`,
+        url: `${authRoute.User}/${id}`,
         method: "DELETE",
       }),
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           tagsApi.util.updateQueryData(
-            "getTags",
+            "getUser",
             { page: 1, size: 10 },
             (draft) => {
               const index = draft.findIndex((t) => t.id === id);
@@ -135,8 +132,8 @@ export const tagsApi = createApi({
 });
 
 export const {
-  useGetTagsQuery,
-  useAddTagMutation,
-  useUpdateTagMutation,
-  useDeleteTagMutation,
+  useGetUserQuery,
+  useAddUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
 } = tagsApi;

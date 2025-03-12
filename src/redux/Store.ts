@@ -10,13 +10,14 @@ import {
   REGISTER,
 } from "redux-persist";
 import logger from "redux-logger";
+import storage from "redux-persist/lib/storage";
 
 import { rootReducer } from "./Reducer";
 import { tagsApi } from "./api/toolkitQuery";
 
 const persistConfig = {
   key: "auth",
-  storage: localStorage,
+  storage: storage,
   whitelist: ["auth", "common"],
   blacklist: [tagsApi.reducerPath],
 };

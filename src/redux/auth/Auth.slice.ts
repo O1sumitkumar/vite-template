@@ -1,66 +1,59 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createReducerBuilder } from "@utils/reduxToolkit";
-import { Toaster } from "@components/toast/Toaster";
 
 import { AuthProp, initialState } from "./Auth.initialState";
-import { updateUserAccountAction } from "./Auth.actions";
+import { loginUser, registerUser } from "./auth.thunk";
 
-// this is for creating reducer for update user account action
-const reducerBuilder = createReducerBuilder<AuthProp>();
-
-// this is for handling pending state
+// 🔹 3. Common handlers for both actions
 const handlePending = (state: AuthProp) => {
   state.isLoader = true;
 };
 
-// this is for handling fulfilled state
 const handleFulfilled = (
   state: AuthProp,
-  payload: any,
-  successMessage: string,
+  { payload }: PayloadAction<any>,
+  successMessage?: string,
 ) => {
   state.isLoader = false;
   if (payload?.data) {
-    state.userData = { ...payload.data.data[0] };
-    Toaster({ message: successMessage, type: "success" });
+    state.userData = { ...payload.data };
+    // Toaster({ message: successMessage || "Success!", type: "success" });
   }
 };
 
-// this is for handling rejected state
-const handleRejected = (state: AuthProp, payload: any) => {
+const handleRejected = (state: AuthProp, { payload }: PayloadAction<any>) => {
   state.isLoader = false;
-  console.error("Update user failed", payload);
-  Toaster({ message: payload?.data?.message, type: "warning" });
+  console.error("Operation failed", payload);
+  // Toaster({ message: payload?.message || "An error occurred", type: "warning" });
 };
 
-// this is for creating reducer for update user account action
-const updateUserReducer = reducerBuilder(updateUserAccountAction, {
-  pending: handlePending,
-  fulfilled: (state, { payload }) =>
-    handleFulfilled(state, payload, payload?.data?.message),
-  rejected: handleRejected,
-});
-
-// this is for creating slice for auth
+// 🟢 4. Create the auth slice
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuthData: (state, action: PayloadAction<any>) => {
+    setAuthData: (state, action: PayloadAction<AuthProp>) => {
       return { ...action.payload };
     },
-    setLoaderStart: (state, { payload }: any) => {
-      state.isLoader = payload;
+    setLoaderStart: (state, action: PayloadAction<boolean>) => {
+      state.isLoader = action.payload;
     },
-    logout: () => {
-      return { ...initialState };
-    },
+    logout: () => initialState,
   },
   extraReducers: (builder) => {
-    updateUserReducer(builder);
+    // builder
+    //   .addCase(registerUser.pending, handlePending)
+    //   .addCase(registerUser.fulfilled, (state, action) =>
+    //     handleFulfilled(state, action, "Registration successful!")
+    //   )
+    //   .addCase(registerUser.rejected, handleRejected)
+    //   .addCase(loginUser.pending, handlePending)
+    //   .addCase(loginUser.fulfilled, (state, action) =>
+    //     handleFulfilled(state, action, "Profile updated successfully!")
+    //   )
+    //   .addCase(loginUser.rejected, handleRejected);
   },
 });
 
+// 🟢 5. Export actions & reducer
 export const { setAuthData, setLoaderStart, logout } = authSlice.actions;
-
 export default authSlice.reducer;

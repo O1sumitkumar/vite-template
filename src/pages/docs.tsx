@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { Alert, Avatar, Button, Card, Code } from "@heroui/react";
 import { Input } from "@heroui/input";
 import { button as buttonStyles } from "@heroui/theme";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import DefaultLayout from "@/layouts/default";
 
@@ -120,10 +122,10 @@ export default function DocsPage() {
     ws.send(
       JSON.stringify({
         role: "user",
-        type: "direct",
+        type: "gemini",
         content: input,
         threadId: "test-thread",
-      }),
+      })
     );
     setInput("");
     inputRef.current?.focus();
@@ -193,16 +195,19 @@ export default function DocsPage() {
                   }
                 >
                   {isCodeMessage(msg.content) ? (
-                    <Code
-                      style={{
-                        padding: "1rem",
-                        fontSize: "0.9em",
-                        width: "100%",
-                        overflowX: "auto",
-                      }}
-                    >
+                    // <Code
+                    //   style={{
+                    //     padding: "1rem",
+                    //     fontSize: "0.9em",
+                    //     width: "100%",
+                    //     overflowX: "auto",
+                    //   }}
+                    // >
+                    //   {extractCodeContent(msg.content)}
+                    // </Code>
+                    <SyntaxHighlighter language={"javascript"} style={oneDark}>
                       {extractCodeContent(msg.content)}
-                    </Code>
+                    </SyntaxHighlighter>
                   ) : (
                     <p
                       style={{

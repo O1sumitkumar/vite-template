@@ -1,13 +1,13 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "FinanceFox",
-  description: "FinanceFox is a platform for managing your finances.",
+  name: "Atlantis Ai",
+  description: "Atlantis Ai platform for all your AI needs.",
   navItems: [
-    {
-      label: "Home",
-      href: "/",
-    },
+    // {
+    //   label: "Home",
+    //   href: "/",
+    // },
     {
       label: "Docs",
       href: "/docs",
@@ -28,10 +28,10 @@ export const siteConfig = {
       label: "Login",
       href: "/auth/login",
     },
-    {
-      label: "Register",
-      href: "/auth/register",
-    },
+    // {
+    //   label: "Register",
+    //   href: "/auth/register",
+    // },
   ],
   navMenuItems: [
     {

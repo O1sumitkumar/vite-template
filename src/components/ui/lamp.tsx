@@ -16,7 +16,7 @@ export default function LampDemo() {
         }}
         whileInView={{ opacity: 1, y: 0 }}
       >
-        Build AI <br /> the right way
+        Build AI <br /> Where Human Ingenuity Meets AI Innovation.
       </motion.h1>
     </LampContainer>
   );

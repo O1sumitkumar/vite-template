@@ -1,5 +1,3 @@
-// import { Toaster } from "@components/toast/Toaster";
-
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
@@ -64,7 +62,7 @@ export const doFetch = async (
   apiURL: string,
   method: string = REQUEST_METHODS.GET,
   body: any = {},
-  otherOptions?: CustomAxiosRequestConfig
+  otherOptions?: CustomAxiosRequestConfig,
 ) => {
   const baseURL = apiBaseUrl;
 
@@ -73,7 +71,7 @@ export const doFetch = async (
     // Cancel previous request with same ID if exists
     if (cancelTokenSources[otherOptions.getCancellationId]) {
       cancelTokenSources[otherOptions.getCancellationId].cancel(
-        "Request cancelled due to new request"
+        "Request cancelled due to new request",
       );
     }
     // Create new cancel token
@@ -140,7 +138,7 @@ export const doFetch = async (
       ](`${baseURL}${apiURL}`, body, config);
     } else {
       throw new Error(
-        `${method} is not supported. Check fetcher.ts configuration.`
+        `${method} is not supported. Check fetcher.ts configuration.`,
       );
     }
 
@@ -170,7 +168,7 @@ axiosInstance.interceptors.request.use(
 
     console.groupCollapsed(
       `%c [REQUEST] ${method} ${requestConfig.url}`,
-      "color:blue; font-weight:bold;"
+      "color:blue; font-weight:bold;",
     );
     console.log("%c Request Details:", "color:blue; font-weight:bold;", {
       Method: method,
@@ -181,7 +179,7 @@ axiosInstance.interceptors.request.use(
     console.log(
       "%c Timestamp:",
       "color:gray; font-weight:bold;",
-      new Date().toLocaleString()
+      new Date().toLocaleString(),
     );
     console.groupEnd();
 
@@ -191,7 +189,7 @@ axiosInstance.interceptors.request.use(
     console.error("%c [REQUEST ERROR]:", "color:red; font-weight:bold;", error);
 
     return Promise.reject(error instanceof Error ? error : new Error(error));
-  }
+  },
 );
 
 axiosInstance.interceptors.response.use(
@@ -203,7 +201,7 @@ axiosInstance.interceptors.response.use(
 
     console.groupCollapsed(
       `%c [RESPONSE] ${method} ${response.config.url} - ${duration}ms`,
-      "color:green; font-weight:bold;"
+      "color:green; font-weight:bold;",
     );
     console.log("%c Response Details:", "color:green; font-weight:bold;", {
       Status: response.status,
@@ -213,7 +211,7 @@ axiosInstance.interceptors.response.use(
     console.log(
       "%c cURL Command:",
       "color:orange; font-weight:bold;",
-      curlCommand
+      curlCommand,
     );
     console.groupEnd();
 
@@ -227,12 +225,12 @@ axiosInstance.interceptors.response.use(
 
     console.groupCollapsed(
       `%c [ERROR] ${method} ${url}`,
-      "color:red; font-weight:bold;"
+      "color:red; font-weight:bold;",
     );
     console.log(
       "%c cURL Command:",
       "color:orange; font-weight:bold;",
-      curlCommand
+      curlCommand,
     );
     console.log("%c Error Details:", "color:red; font-weight:bold;", {
       Status: error.response?.status,
@@ -250,10 +248,11 @@ axiosInstance.interceptors.response.use(
         (error.response?.data as { message?: string })?.message ??
         "Unauthorized";
 
-      Toaster({
-        message: errorMessage,
-        type: "danger",
-      });
+      // Toaster({
+      //   message: errorMessage,
+      //   type: "danger",
+      // });
+      console.log("Error Message:", errorMessage);
       throw error;
     } else if (
       [429, 410, 409, 400, 500, 403].includes(error?.response?.status || 0)
@@ -262,19 +261,21 @@ axiosInstance.interceptors.response.use(
         (error.response?.data as { message?: string })?.message ??
         "Unauthorized";
 
-      Toaster({
-        message: errorMessage,
-        type: "danger",
-      });
+      // Toaster({
+      //   message: errorMessage,
+      //   type: "danger",
+      // });
+      console.log("Error Message:", errorMessage);
     } else if (error?.response?.status === 404) {
       const errorMessage =
         (error.response?.data as { message?: string })?.message ??
         "Unauthorized";
 
-      Toaster({
-        message: errorMessage,
-        type: "danger",
-      });
+      // Toaster({
+      //   message: errorMessage,
+      //   type: "danger",
+      // });
+      console.log("Error Message:", errorMessage);
     }
 
     // Check if a toast should be shown or not
@@ -286,54 +287,61 @@ axiosInstance.interceptors.response.use(
     }
 
     if (error.message === "Network Error") {
-      Toaster({
-        message: "Network Error",
-        type: "danger",
-      });
+      // Toaster({
+      //   message: "Network Error",
+      //   type: "danger",
+      // });
+      console.log("Error Message:", "Network Error");
     } else if (error.response?.status === 429) {
-      Toaster({
-        message: "Request limit exceeded",
-        type: "danger",
-      });
+      // Toaster({
+      //   message: "Request limit exceeded",
+      //   type: "danger",
+      // });
+      console.log("Error Message:", "Request limit exceeded");
       // Handle errors based on status codes
       if (error?.response?.status >= 400 && error?.config?.method !== "get") {
         //@ts-ignore
 
         if (typeof error?.response?.data.message === "string") {
-          Toaster({
-            //@ts-ignore
-            message: error?.response?.data.message,
-            type: "danger",
-          });
+          // Toaster({
+          //   //@ts-ignore
+          //   message: error?.response?.data.message,
+          //   type: "danger",
+          // });
+          console.log("Error Message:", error?.response?.data?.message);
         } else if (typeof error?.response?.data === "string") {
-          Toaster({
-            message: error?.response?.data,
-            type: "danger",
-          });
+          // Toaster({
+          //   message: error?.response?.data,
+          //   type: "danger",
+          // });
+          console.log("Error Message:", error?.response?.data);
           //@ts-ignore
         } else if (typeof error?.response?.data?.response === "string") {
-          Toaster({
-            //@ts-ignore
+          // Toaster({
+          //   //@ts-ignore
 
-            message: error?.response?.data?.response,
-            type: "danger",
-          });
+          //   message: error?.response?.data?.response,
+          //   type: "danger",
+          // });
+          console.log("Error Message:", error?.response?.data);
         } else if (error?.response?.status === 429) {
-          Toaster({
-            message: "Request limit is exceeded",
-            type: "danger",
-          });
+          // Toaster({
+          //   message: "Request limit is exceeded",
+          //   type: "danger",
+          // });
+          console.log("Error Message:", "Request limit is exceeded");
         } else {
-          Toaster({
-            message: "Server error",
-            type: "danger",
-          });
+          // Toaster({
+          //   message: "Server error",
+          //   type: "danger",
+          // });
+          console.log("Error Message:", "Server error");
         }
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // Add this utility function to manually cancel requests

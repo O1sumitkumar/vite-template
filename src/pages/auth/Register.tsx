@@ -1,5 +1,6 @@
 import { Button, Card } from "@heroui/react";
 import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
 
 import AuthForm from "@/components/forms/AuthForm";
 import DefaultLayout from "@/layouts/default";
@@ -10,13 +11,18 @@ import {
   registerValidation,
 } from "@/validations/auth.validation";
 import DropDown from "@/components/dropDowns/DropDown";
+import { registerUser } from "@/redux/auth/auth.thunk";
 
 export default function RegisterPage() {
+  const dispatch = useDispatch();
+
   const formik = useFormik({
     initialValues: registerInitialValues,
     validationSchema: registerValidation,
     onSubmit: async (values, { resetForm }) => {
       try {
+        const resultAction = await dispatch(registerUser(values));
+
         await new Promise((resolve) => setTimeout(resolve, 8000)); // Simulate API Call
         resetForm();
       } catch (error) {
